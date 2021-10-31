@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class ModelFacade:
 
@@ -17,3 +18,9 @@ class ModelFacade:
     @staticmethod
     def create_DurationField(label):
         return models.DurationField(label)
+
+class DjangoExceptionsFacade:
+
+    @staticmethod
+    def raise_ValidationError(message):
+            raise ValidationError(message)
