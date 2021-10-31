@@ -8,7 +8,7 @@ class ModelFacade:
 
     @staticmethod
     def create_CharField(label, max_length):
-        return models.CharField(label, max_length=max_length)
+        return models.CharField(label, max_length=max_length, blank=False)
 
     @staticmethod
     def create_MoneyField(label, max_digits):
