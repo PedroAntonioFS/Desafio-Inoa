@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 from .facade import *
 from .models import Asset
 
-# Create your tests here.
-
 class TestModelFacade(TestCase):
 
     def test_create_ForeignKey(self):
@@ -29,7 +27,6 @@ class TestModelFacade(TestCase):
 
 class TestAsset(TestCase):
     def setUp(self):
-        self.teste = 1
         self._user = User.objects.create(username="user1")
 
     def test_create_Asset(self):
@@ -62,3 +59,26 @@ class TestAsset(TestCase):
             asset = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
         except:
             pass
+
+class TestAssetsListView(TestCase):
+    def setUp(self):
+        self._user = User.objects.create(username="user1")
+        
+        self._asset1 = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
+        self._asset2 = Asset.objects.create(investor=self._user, name="VALE3", price=71.96, max_limit=120.00, min_limit=50.00, sleep_time=timedelta(days=5))
+        self._asset3 = Asset.objects.create(investor=self._user, name="GOLGL34", price=111.56, max_limit=170.00, min_limit=110.00, sleep_time=timedelta(days=7))
+
+    def test_url(self):
+        response = self.client.get('')
+        self.assertEqual(response.status_code, 200)
+
+    def test_template(self):
+        response = self.client.get('')
+        self.assertEqual(response.template_name[0], 'asset/list.html')
+
+    def test_context(self):
+        response = self.client.get('')
+
+        self.assertEquals(response.context['object_list'][0], self._asset1)
+        self.assertEquals(response.context['object_list'][1], self._asset2)
+        self.assertEquals(response.context['object_list'][2], self._asset3)

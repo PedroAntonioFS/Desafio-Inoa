@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from .facade import ModelFacade
 
-# Create your models here.
 class Asset(models.Model):
     investor = ModelFacade.create_ForeignKey(User)
     name = ModelFacade.create_CharField("Ativo", 10)
