@@ -2,7 +2,8 @@ from datetime import timedelta
 from django.test import TestCase
 from django.contrib.auth.models import User
 from .facade import *
-from .models import Asset
+from .models import *
+from .forms import *
 from .templatetags.poll_extra import *
 
 class TestModelFacade(TestCase):
@@ -93,3 +94,22 @@ class Test_poll_extra(TestCase):
         self.assertEquals(hours12, "12:00:00")
         self.assertEquals(day1, "1 dia, 00:00:00")
         self.assertEquals(day5, "5 dias, 00:00:00")
+
+class TestAssetForm(TestCase):
+    def test_add_asset(self):
+        form = AssetForm({'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
+        self.assertTrue(form.is_valid())
+
+    def test_min_bigger_than_max(self):
+        form = AssetForm({'name':"PETR4", 'max_limit':19.07, 'min_limit':50.00, 'sleep_time':timedelta(days=1)})
+        self.assertFalse(form.is_valid())
+
+    def test_null_constraint(self):
+        form = AssetForm({'name':None, 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
+        self.assertFalse(form.is_valid())
+        form = AssetForm({'name':"PETR4", 'max_limit':None, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
+        self.assertFalse(form.is_valid())
+        form = AssetForm({'name':"PETR4", 'max_limit':50.00, 'min_limit':None, 'sleep_time':timedelta(days=1)})
+        self.assertFalse(form.is_valid())
+        form = AssetForm({'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':None})
+        self.assertFalse(form.is_valid())
