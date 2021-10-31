@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from .facade import *
 from .models import Asset
+from .templatetags.poll_extra import *
 
 class TestModelFacade(TestCase):
 
@@ -82,3 +83,13 @@ class TestAssetsListView(TestCase):
         self.assertEquals(response.context['object_list'][0], self._asset1)
         self.assertEquals(response.context['object_list'][1], self._asset2)
         self.assertEquals(response.context['object_list'][2], self._asset3)
+
+class Test_poll_extra(TestCase):
+    def format_timedelta_in_pt_br(self):
+        hours12 = format_timedelta_in_pt_br(timedelta(hours=12))
+        day1 = format_timedelta_in_pt_br(timedelta(days=1))
+        day5 = format_timedelta_in_pt_br(timedelta(days=5))
+
+        self.assertEquals(hours12, "12:00:00")
+        self.assertEquals(day1, "1 dia, 00:00:00")
+        self.assertEquals(day5, "5 dias, 00:00:00")
