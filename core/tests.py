@@ -1,4 +1,5 @@
 from datetime import timedelta
+from decimal import Decimal
 from django.test import TestCase
 from django.contrib.auth.models import User
 from .facade import *
@@ -113,3 +114,60 @@ class TestAssetForm(TestCase):
         self.assertFalse(form.is_valid())
         form = AssetForm({'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':None})
         self.assertFalse(form.is_valid())
+
+class TestAddAssetView(TestCase):
+    def setUp(self):
+        self._user = User.objects.create(username="user1")
+
+    def test_url(self):
+        response = self.client.get('/add/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_template(self):
+        response = self.client.get('/add/')
+        self.assertTemplateUsed(response, 'asset/add.html')
+
+    def test_add_asset(self):
+        sleep_time = timedelta(days=1)
+        response = self.client.post('/add/', {'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'asset/list.html')
+
+        asset = Asset.objects.get(name="PETR4", investor=self._user)
+
+        self.assertIsNotNone(asset)
+        self.assertEqual(asset.investor, self._user)
+        self.assertEqual(asset.name, "PETR4")
+        self.assertEqual(asset.price, Decimal('10.00'))
+        self.assertEqual(asset.max_limit, Decimal('50.00'))
+        self.assertEqual(asset.min_limit, Decimal('19.07'))
+        self.assertEqual(asset.sleep_time, sleep_time)
+
+    def test_min_bigger_than_max(self):
+        self.client.post('/add/', {'name':"PETR4", 'max_limit':19.07, 'min_limit':50.00, 'sleep_time':timedelta(days=1)})
+
+        try:
+            Asset.objects.get(name="PETR4", investor=self._user)
+            self.fail("Invalid: min_limit >= max_limit")
+        except:
+            pass
+
+    def test_null_constraint(self):
+        try:
+            self.client.post('/add/', {'name':None, 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
+            self.client.post('/add/', {'name':"PETR4", 'max_limit':None, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
+            self.client.post('/add/', {'name':"PETR4", 'max_limit':50.00, 'min_limit':None, 'sleep_time':timedelta(days=1)})
+            self.client.post('/add/', {'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':None})
+            self.fail("Invalid: Not null constraint fail")
+        except:
+            pass
+
+    def test_unique_constraint(self):
+        try:
+            sleep_time = timedelta(days=1)
+            self.client.post('/add/', {'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
+            self.client.post('/add/', {'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
+            self.fail("Invalid: Unique constraint fail")
+        except:
+            pass
