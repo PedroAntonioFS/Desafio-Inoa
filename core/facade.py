@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.http import HttpResponseRedirect
 
 class ModelFacade:
 
@@ -24,3 +25,9 @@ class DjangoExceptionsFacade:
     @staticmethod
     def raise_ValidationError(message):
             raise ValidationError(message)
+
+class HttpFacade:
+
+    @staticmethod
+    def call_redirect(url):
+        return HttpResponseRedirect(url) 
