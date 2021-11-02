@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
+from urllib import request
+import json
 
 class ModelFacade:
 
@@ -30,4 +32,17 @@ class HttpFacade:
 
     @staticmethod
     def call_redirect(url):
-        return HttpResponseRedirect(url) 
+        return HttpResponseRedirect(url)
+
+class B3Facade:
+
+    @staticmethod
+    def get_asset_price(asset):
+        url = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={}.SA&apikey=KOLIMB2YNWG6T5QI".format(asset)
+        
+        with request.urlopen(url) as response:
+            data = response.read()
+        
+        price = float(json.loads(data.decode('utf-8'))['Global Quote']['05. price'])
+        
+        return price
