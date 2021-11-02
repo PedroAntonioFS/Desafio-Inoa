@@ -25,7 +25,7 @@
                     <tr><th scope="col">Periodicidade de atualização</th></tr>
                     <tr><td>{{ asset.sleep_time|br_time }}</td></tr>
                 </table>
-                <a href="#" class="btn btn-primary">Editar</a>
+                <a href="{% url 'update_asset' pk=asset.pk  %}" class="btn btn-primary">Editar</a>
                 <a href="#" class="btn btn-danger">Remover</a>
             </div>
         </div>
