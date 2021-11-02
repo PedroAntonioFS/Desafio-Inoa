@@ -77,7 +77,7 @@ class TestAssetsListView(TestCase):
 
     def test_template(self):
         response = self.client.get('')
-        self.assertEqual(response.template_name[0], 'asset/list.html')
+        self.assertEqual(response.template_name[0], 'core/asset/list.html')
 
     def test_context(self):
         response = self.client.get('')
@@ -125,14 +125,14 @@ class TestAddAssetView(TestCase):
 
     def test_template(self):
         response = self.client.get('/add/')
-        self.assertTemplateUsed(response, 'asset/add.html')
+        self.assertTemplateUsed(response, 'core/asset/add.html')
 
     def test_add_asset(self):
         sleep_time = timedelta(days=1)
         response = self.client.post('/add/', {'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'asset/list.html')
+        self.assertTemplateUsed(response, 'core/asset/list.html')
 
         asset = Asset.objects.get(name="PETR4", investor=self._user)
 
