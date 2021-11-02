@@ -139,7 +139,7 @@ class TestAddAssetView(TestCase):
         self.assertIsNotNone(asset)
         self.assertEqual(asset.investor, self._user)
         self.assertEqual(asset.name, "PETR4")
-        self.assertEqual(asset.price, Decimal('10.00'))
+        self.assertEqual(type(asset.price), type(Decimal('10.00')))
         self.assertEqual(asset.max_limit, Decimal('50.00'))
         self.assertEqual(asset.min_limit, Decimal('19.07'))
         self.assertEqual(asset.sleep_time, sleep_time)
@@ -197,7 +197,7 @@ class TestUpdateAssetView(TestCase):
         self.assertIsNotNone(asset)
         self.assertEqual(asset.investor, self._user)
         self.assertEqual(asset.name, "PETR4")
-        self.assertEqual(asset.price, Decimal('10.00'))
+        self.assertEqual(type(asset.price), type(Decimal('10.00')))
         self.assertEqual(asset.max_limit, Decimal('60.00'))
         self.assertEqual(asset.min_limit, Decimal('20.00'))
         self.assertEqual(asset.sleep_time, sleep_time)
@@ -246,3 +246,8 @@ class TestDeleteAssetView(TestCase):
             self.fail("Invalid: Delete Asset fail")
         except:
             pass
+
+class TestB3Facade(TestCase):
+    def test_get_asset_price(self):
+        petr4 = B3Facade.get_asset_price("PETR4")
+        self.assertIsNotNone(petr4)

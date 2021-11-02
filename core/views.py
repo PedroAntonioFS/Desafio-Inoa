@@ -3,7 +3,7 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import *
 from .forms import *
-from .facade import HttpFacade
+from .facade import HttpFacade, B3Facade
 from .utils import *
 
 class AssetsListView(ListView):
@@ -32,8 +32,8 @@ class AddAssetView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit = False)
         user = User.objects.get(username="user1")
-        price = 10.00
-
+        price = B3Facade.get_asset_price(self.object.name)
+        
         self.object.investor = user
         self.object.price = price
 
@@ -58,7 +58,7 @@ class UpdateAssetView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save(commit = False)
-        price = 10.00
+        price = B3Facade.get_asset_price(self.object.name)
         
         self.object.price = price
 
