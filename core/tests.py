@@ -220,3 +220,29 @@ class TestUpdateAssetView(TestCase):
             self.fail("Invalid: Not null constraint fail")
         except:
             pass
+
+class TestDeleteAssetView(TestCase):
+    def setUp(self):
+        self._user = User.objects.create(username="user1")
+        self._asset = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
+
+    def test_url(self):
+        response = self.client.get('/{}/delete/'.format(self._asset.id))
+        self.assertEqual(response.status_code, 200)
+        
+    def test_template(self):
+        response = self.client.get('/{}/delete/'.format(self._asset.id))
+        self.assertTemplateUsed(response, 'core/asset/delete.html')
+
+    def test_delete_asset(self):
+        sleep_time = timedelta(days=1)
+        response = self.client.post('/{}/delete/'.format(self._asset.id), {'name':"PETR4", 'max_limit':60.00, 'min_limit':20.00, 'sleep_time':sleep_time}, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'core/asset/list.html')
+
+        try:
+            Asset.objects.get(name="PETR4", investor=self._user)
+            self.fail("Invalid: Delete Asset fail")
+        except:
+            pass
