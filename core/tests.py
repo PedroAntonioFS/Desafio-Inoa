@@ -221,7 +221,7 @@ class TestUpdateAssetView(TestCase):
         except:
             pass
 
-class TestUpdateAssetView(TestCase):
+class TestDeleteAssetView(TestCase):
     def setUp(self):
         self._user = User.objects.create(username="user1")
         self._asset = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
@@ -234,7 +234,7 @@ class TestUpdateAssetView(TestCase):
         response = self.client.get('/{}/delete/'.format(self._asset.id))
         self.assertTemplateUsed(response, 'core/asset/delete.html')
 
-    def test_update_asset(self):
+    def test_delete_asset(self):
         sleep_time = timedelta(days=1)
         response = self.client.post('/{}/delete/'.format(self._asset.id), {'name':"PETR4", 'max_limit':60.00, 'min_limit':20.00, 'sleep_time':sleep_time}, follow=True)
 
