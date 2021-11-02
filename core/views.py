@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import *
 from .forms import *
 from .facade import HttpFacade
@@ -66,3 +66,7 @@ class UpdateAssetView(UpdateView):
 
         return HttpFacade.call_redirect(self.get_success_url())
 
+class DeleteAssetView(DeleteView):
+    template_name = 'core/asset/delete.html'
+    model = Asset
+    success_url = '/'
