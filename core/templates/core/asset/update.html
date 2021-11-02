@@ -1,6 +1,18 @@
-{% extends 'core/base.html' %}
+{% extends 'core/asset/form.html' %}
 {% load static %}
 
 {% block title %}
     <h1 class="display-6 text-center">Editar Ativo</h1>
+{% endblock %}
+
+{% block more_fields %}
+    {% for error in form.name.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endfor %}
+    <div class="mb-3">
+        <label for="{{ form.name.name }}" class="form-label">{{ form.name.label }}</label>
+        <input id="id_{{ form.name.name }}" class="form-control" type="text" name="{{ form.name.name }}" value="{{ form.name.value }}" required="" readonly>
+    </div>
 {% endblock %}
