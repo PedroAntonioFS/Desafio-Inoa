@@ -7,7 +7,7 @@ from .forms import *
 from .facade import HttpFacade
 
 class AssetsListView(ListView):
-    template_name = "asset/list.html"
+    template_name = "core/asset/list.html"
     model = Asset
 
     def get_query_set(self):
@@ -17,7 +17,7 @@ class AssetsListView(ListView):
         return query.filter(investor=user)
 
 class AddAssetView(CreateView):
-    template_name = "asset/add.html"
+    template_name = "core/asset/add.html"
     form_class = AssetForm
     success_url = '/'
 
