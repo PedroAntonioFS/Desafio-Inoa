@@ -3,6 +3,11 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from urllib import request
 import json
+from .utils import ASSET_NOT_FOUND_ERROR, API_REQUEST_LIMIT_ERROR
+
+def validate_negative(value):
+    if value < 0:
+        DjangoExceptionsFacade.raise_ValidationError("Valor Inválido: {}. O campo não pode ser negativo".format(value))
 
 class ModelFacade:
 
@@ -16,7 +21,7 @@ class ModelFacade:
 
     @staticmethod
     def create_MoneyField(label, max_digits):
-        return models.DecimalField(label, max_digits=max_digits, decimal_places=2)
+        return models.DecimalField(label, max_digits=max_digits, decimal_places=2, validators=[validate_negative])
 
     @staticmethod
     def create_DurationField(label):
@@ -42,7 +47,14 @@ class B3Facade:
         
         with request.urlopen(url) as response:
             data = response.read()
-        
-        price = float(json.loads(data.decode('utf-8'))['Global Quote']['05. price'])
-        
-        return price
+
+        try:
+            price = float(json.loads(data.decode('utf-8'))['Global Quote']['05. price'])
+        except:
+            try:
+                json.loads(data.decode('utf-8'))['Global Quote']
+                price = ASSET_NOT_FOUND_ERROR
+            except:
+                price = API_REQUEST_LIMIT_ERROR
+        finally:
+            return price

@@ -6,6 +6,7 @@ from .facade import *
 from .models import *
 from .forms import *
 from .templatetags.poll_extra import *
+from .utils import *
 
 class TestModelFacade(TestCase):
 
@@ -115,6 +116,18 @@ class TestAssetForm(TestCase):
         form = AssetForm({'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':None})
         self.assertFalse(form.is_valid())
 
+    def test_negative(self):
+        form = AssetForm({'name':"PETR4", 'max_limit':-50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
+        self.assertFalse(form.is_valid())
+
+    def test_not_found_error(self):
+        form = AssetForm({'name':"PETR4", 'max_limit':-50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)}, price=ASSET_NOT_FOUND_ERROR)
+        self.assertFalse(form.is_valid())
+
+    def test_request_limit_error(self):
+        form = AssetForm({'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)}, price=API_REQUEST_LIMIT_ERROR)
+        self.assertFalse(form.is_valid())
+
 class TestAddAssetView(TestCase):
     def setUp(self):
         self._user = User.objects.create(username="user1")
@@ -144,34 +157,16 @@ class TestAddAssetView(TestCase):
         self.assertEqual(asset.min_limit, Decimal('19.07'))
         self.assertEqual(asset.sleep_time, sleep_time)
 
-    def test_min_bigger_than_max(self):
-        self.client.post('/add/', {'name':"PETR4", 'max_limit':19.07, 'min_limit':50.00, 'sleep_time':timedelta(days=1)})
-
+    def test_not_found(self):
+        sleep_time = timedelta(days=1)
+        self.client.post('/add/', {'name':"TESTE", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
+        
         try:
-            Asset.objects.get(name="PETR4", investor=self._user)
-            self.fail("Invalid: min_limit >= max_limit")
+            Asset.objects.get(name="TESTE", investor=self._user)
+            self.fail('Invalid: Asset does not exists error was not raised!')
         except:
             pass
-
-    def test_null_constraint(self):
-        try:
-            self.client.post('/add/', {'name':None, 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
-            self.client.post('/add/', {'name':"PETR4", 'max_limit':None, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
-            self.client.post('/add/', {'name':"PETR4", 'max_limit':50.00, 'min_limit':None, 'sleep_time':timedelta(days=1)})
-            self.client.post('/add/', {'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':None})
-            self.fail("Invalid: Not null constraint fail")
-        except:
-            pass
-
-    def test_unique_constraint(self):
-        try:
-            sleep_time = timedelta(days=1)
-            self.client.post('/add/', {'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
-            self.client.post('/add/', {'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
-            self.fail("Invalid: Unique constraint fail")
-        except:
-            pass
-
+    
 class TestUpdateAssetView(TestCase):
     def setUp(self):
         self._user = User.objects.create(username="user1")
@@ -201,23 +196,14 @@ class TestUpdateAssetView(TestCase):
         self.assertEqual(asset.max_limit, Decimal('60.00'))
         self.assertEqual(asset.min_limit, Decimal('20.00'))
         self.assertEqual(asset.sleep_time, sleep_time)
-        
-    def test_min_bigger_than_max(self):
-        self.client.post('/{}/update/'.format(self._asset.id), {'name':"PETR4", 'max_limit':19.07, 'min_limit':50.00, 'sleep_time':timedelta(days=1)})
 
-        try:
-            Asset.objects.get(name="PETR4", investor=self._user)
-            self.fail("Invalid: min_limit >= max_limit")
-        except:
-            pass
+    def test_not_found(self):
+        sleep_time = timedelta(days=1)
+        self.client.post('/update/', {'name':"TESTE", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
         
-    def test_null_constraint(self):
         try:
-            self.client.post('/{}/update/'.format(self._asset.id), {'name':None, 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
-            self.client.post('/{}/update/'.format(self._asset.id), {'name':"PETR4", 'max_limit':None, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
-            self.client.post('/{}/update/'.format(self._asset.id), {'name':"PETR4", 'max_limit':50.00, 'min_limit':None, 'sleep_time':timedelta(days=1)})
-            self.client.post('/{}/update/'.format(self._asset.id), {'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':None})
-            self.fail("Invalid: Not null constraint fail")
+            Asset.objects.get(name="TESTE", investor=self._user)
+            self.fail('Invalid: Asset does not exists error was not raised!')
         except:
             pass
 
