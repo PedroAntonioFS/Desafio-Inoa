@@ -22,7 +22,7 @@ class AddAssetView(CreateView):
     success_url = '/'
 
     def post(self, request, *args, **kwargs):
-        self._price = B3Facade.get_asset_price(request.POST['name'])
+        self._price = B3Facade.get_asset_price(request.POST['ticker'])
 
         return super().post(request, *args, **kwargs)
 
@@ -61,7 +61,7 @@ class UpdateAssetView(UpdateView):
     success_url = '/'
 
     def post(self, request, *args, **kwargs):
-        self._price = B3Facade.get_asset_price(request.POST['name'])
+        self._price = B3Facade.get_asset_price(request.POST['ticker'])
 
         return super().post(request, *args, **kwargs)
 

@@ -5,7 +5,7 @@
 <div class="row justify-content-center">
     <form class="col-3" method="post">
         {% csrf_token %}
-        <p>Tem certeza que deseja remover o ativo "{{ object.name }}"?</p>
+        <p>Tem certeza que deseja remover o ativo "{{ object.ticker }}"?</p>
         <div class="row">
             <input type="submit" class="btn btn-danger" value="Sim"></input>
         </div>

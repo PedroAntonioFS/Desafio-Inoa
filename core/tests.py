@@ -35,10 +35,10 @@ class TestAsset(TestCase):
 
     def test_create_Asset(self):
         sleep_time = timedelta(days=1)
-        asset = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
+        asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
         
         self.assertEquals(asset.investor, self._user)
-        self.assertEquals(asset.name, "PETR4")
+        self.assertEquals(asset.ticker, "PETR4")
         self.assertEquals(asset.price, 27.48)
         self.assertEquals(asset.max_limit, 19.07)
         self.assertEquals(asset.min_limit, 50.00)
@@ -47,20 +47,20 @@ class TestAsset(TestCase):
     def test_null_constraint(self):
         sleep_time = timedelta(days=1)
         try:
-            asset = Asset.objects.create(investor=None, name="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
-            asset = Asset.objects.create(investor=self._user, name=None, price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
-            asset = Asset.objects.create(investor=self._user, name="PETR4", price=None, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
-            asset = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=None, min_limit=50.00, sleep_time=sleep_time)
-            asset = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=19.07, min_limit=None, sleep_time=sleep_time)
-            asset = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=None)
+            asset = Asset.objects.create(investor=None, ticker="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
+            asset = Asset.objects.create(investor=self._user, ticker=None, price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
+            asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=None, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
+            asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=None, min_limit=50.00, sleep_time=sleep_time)
+            asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=19.07, min_limit=None, sleep_time=sleep_time)
+            asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=None)
         except:
             pass
 
     def test_unique_constraint(self):
         sleep_time = timedelta(days=1)
         try:
-            asset = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
-            asset = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
+            asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
+            asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
         except:
             pass
 
@@ -68,9 +68,9 @@ class TestAssetsListView(TestCase):
     def setUp(self):
         self._user = User.objects.create(username="user1")
         
-        self._asset1 = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
-        self._asset2 = Asset.objects.create(investor=self._user, name="VALE3", price=71.96, max_limit=120.00, min_limit=50.00, sleep_time=timedelta(days=5))
-        self._asset3 = Asset.objects.create(investor=self._user, name="GOLGL34", price=111.56, max_limit=170.00, min_limit=110.00, sleep_time=timedelta(days=7))
+        self._asset1 = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
+        self._asset2 = Asset.objects.create(investor=self._user, ticker="VALE3", price=71.96, max_limit=120.00, min_limit=50.00, sleep_time=timedelta(days=5))
+        self._asset3 = Asset.objects.create(investor=self._user, ticker="GOLGL34", price=111.56, max_limit=170.00, min_limit=110.00, sleep_time=timedelta(days=7))
 
     def test_url(self):
         response = self.client.get('')
@@ -99,33 +99,33 @@ class Test_poll_extra(TestCase):
 
 class TestAssetForm(TestCase):
     def test_add_asset(self):
-        form = AssetForm({'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
+        form = AssetForm({'ticker':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
         self.assertTrue(form.is_valid())
 
     def test_min_bigger_than_max(self):
-        form = AssetForm({'name':"PETR4", 'max_limit':19.07, 'min_limit':50.00, 'sleep_time':timedelta(days=1)})
+        form = AssetForm({'ticker':"PETR4", 'max_limit':19.07, 'min_limit':50.00, 'sleep_time':timedelta(days=1)})
         self.assertFalse(form.is_valid())
 
     def test_null_constraint(self):
-        form = AssetForm({'name':None, 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
+        form = AssetForm({'ticker':None, 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
         self.assertFalse(form.is_valid())
-        form = AssetForm({'name':"PETR4", 'max_limit':None, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
+        form = AssetForm({'ticker':"PETR4", 'max_limit':None, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
         self.assertFalse(form.is_valid())
-        form = AssetForm({'name':"PETR4", 'max_limit':50.00, 'min_limit':None, 'sleep_time':timedelta(days=1)})
+        form = AssetForm({'ticker':"PETR4", 'max_limit':50.00, 'min_limit':None, 'sleep_time':timedelta(days=1)})
         self.assertFalse(form.is_valid())
-        form = AssetForm({'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':None})
+        form = AssetForm({'ticker':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':None})
         self.assertFalse(form.is_valid())
 
     def test_negative(self):
-        form = AssetForm({'name':"PETR4", 'max_limit':-50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
+        form = AssetForm({'ticker':"PETR4", 'max_limit':-50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)})
         self.assertFalse(form.is_valid())
 
     def test_not_found_error(self):
-        form = AssetForm({'name':"PETR4", 'max_limit':-50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)}, price=ASSET_NOT_FOUND_ERROR)
+        form = AssetForm({'ticker':"PETR4", 'max_limit':-50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)}, price=ASSET_NOT_FOUND_ERROR)
         self.assertFalse(form.is_valid())
 
     def test_request_limit_error(self):
-        form = AssetForm({'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)}, price=API_REQUEST_LIMIT_ERROR)
+        form = AssetForm({'ticker':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':timedelta(days=1)}, price=API_REQUEST_LIMIT_ERROR)
         self.assertFalse(form.is_valid())
 
 class TestAddAssetView(TestCase):
@@ -142,16 +142,16 @@ class TestAddAssetView(TestCase):
 
     def test_add_asset(self):
         sleep_time = timedelta(days=1)
-        response = self.client.post('/add/', {'name':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
+        response = self.client.post('/add/', {'ticker':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'core/asset/list.html')
 
-        asset = Asset.objects.get(name="PETR4", investor=self._user)
+        asset = Asset.objects.get(ticker="PETR4", investor=self._user)
 
         self.assertIsNotNone(asset)
         self.assertEqual(asset.investor, self._user)
-        self.assertEqual(asset.name, "PETR4")
+        self.assertEqual(asset.ticker, "PETR4")
         self.assertEqual(type(asset.price), type(Decimal('10.00')))
         self.assertEqual(asset.max_limit, Decimal('50.00'))
         self.assertEqual(asset.min_limit, Decimal('19.07'))
@@ -159,10 +159,10 @@ class TestAddAssetView(TestCase):
 
     def test_not_found(self):
         sleep_time = timedelta(days=1)
-        self.client.post('/add/', {'name':"TESTE", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
+        self.client.post('/add/', {'ticker':"TESTE", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
         
         try:
-            Asset.objects.get(name="TESTE", investor=self._user)
+            Asset.objects.get(ticker="TESTE", investor=self._user)
             self.fail('Invalid: Asset does not exists error was not raised!')
         except:
             pass
@@ -170,7 +170,7 @@ class TestAddAssetView(TestCase):
 class TestUpdateAssetView(TestCase):
     def setUp(self):
         self._user = User.objects.create(username="user1")
-        self._asset = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
+        self._asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
 
     def test_url(self):
         response = self.client.get('/{}/update/'.format(self._asset.id))
@@ -182,16 +182,16 @@ class TestUpdateAssetView(TestCase):
         
     def test_update_asset(self):
         sleep_time = timedelta(days=1)
-        response = self.client.post('/{}/update/'.format(self._asset.id), {'name':"PETR4", 'max_limit':60.00, 'min_limit':20.00, 'sleep_time':sleep_time}, follow=True)
+        response = self.client.post('/{}/update/'.format(self._asset.id), {'ticker':"PETR4", 'max_limit':60.00, 'min_limit':20.00, 'sleep_time':sleep_time}, follow=True)
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'core/asset/list.html')
 
-        asset = Asset.objects.get(name="PETR4", investor=self._user)
+        asset = Asset.objects.get(ticker="PETR4", investor=self._user)
 
         self.assertIsNotNone(asset)
         self.assertEqual(asset.investor, self._user)
-        self.assertEqual(asset.name, "PETR4")
+        self.assertEqual(asset.ticker, "PETR4")
         self.assertEqual(type(asset.price), type(Decimal('10.00')))
         self.assertEqual(asset.max_limit, Decimal('60.00'))
         self.assertEqual(asset.min_limit, Decimal('20.00'))
@@ -199,10 +199,10 @@ class TestUpdateAssetView(TestCase):
 
     def test_not_found(self):
         sleep_time = timedelta(days=1)
-        self.client.post('/update/', {'name':"TESTE", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
+        self.client.post('/update/', {'ticker':"TESTE", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time}, follow=True)
         
         try:
-            Asset.objects.get(name="TESTE", investor=self._user)
+            Asset.objects.get(ticker="TESTE", investor=self._user)
             self.fail('Invalid: Asset does not exists error was not raised!')
         except:
             pass
@@ -210,7 +210,7 @@ class TestUpdateAssetView(TestCase):
 class TestDeleteAssetView(TestCase):
     def setUp(self):
         self._user = User.objects.create(username="user1")
-        self._asset = Asset.objects.create(investor=self._user, name="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
+        self._asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
 
     def test_url(self):
         response = self.client.get('/{}/delete/'.format(self._asset.id))
@@ -222,13 +222,13 @@ class TestDeleteAssetView(TestCase):
 
     def test_delete_asset(self):
         sleep_time = timedelta(days=1)
-        response = self.client.post('/{}/delete/'.format(self._asset.id), {'name':"PETR4", 'max_limit':60.00, 'min_limit':20.00, 'sleep_time':sleep_time}, follow=True)
+        response = self.client.post('/{}/delete/'.format(self._asset.id), {'ticker':"PETR4", 'max_limit':60.00, 'min_limit':20.00, 'sleep_time':sleep_time}, follow=True)
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'core/asset/list.html')
 
         try:
-            Asset.objects.get(name="PETR4", investor=self._user)
+            Asset.objects.get(ticker="PETR4", investor=self._user)
             self.fail("Invalid: Delete Asset fail")
         except:
             pass

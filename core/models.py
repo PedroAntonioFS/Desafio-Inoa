@@ -4,7 +4,7 @@ from .facade import ModelFacade
 
 class Asset(models.Model):
     investor = ModelFacade.create_ForeignKey(User)
-    name = ModelFacade.create_CharField("Ativo", 10)
+    ticker = ModelFacade.create_CharField("ticker", 10)
     price = ModelFacade.create_MoneyField("Preço", 5)
     max_limit = ModelFacade.create_MoneyField("Limite máximo", 5)
     min_limit = ModelFacade.create_MoneyField("Limite mínimo", 5)
@@ -12,4 +12,4 @@ class Asset(models.Model):
 
     class Meta:
         verbose_name = "Ativo"
-        unique_together = ['investor', 'name']
+        unique_together = ['investor', 'ticker']
