@@ -21,6 +21,20 @@ class AddAssetView(CreateView):
     form_class = AssetForm
     success_url = '/'
 
+    def post(self, request, *args, **kwargs):
+        self._price = B3Facade.get_asset_price(request.POST['name'])
+
+        return super().post(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        
+        kwargs = super().get_form_kwargs()
+
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({'price': self._price})
+
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
@@ -32,10 +46,9 @@ class AddAssetView(CreateView):
     def form_valid(self, form):
         self.object = form.save(commit = False)
         user = User.objects.get(username="user1")
-        price = B3Facade.get_asset_price(self.object.name)
         
         self.object.investor = user
-        self.object.price = price
+        self.object.price = self._price
 
         self.object.save()
 
@@ -46,6 +59,20 @@ class UpdateAssetView(UpdateView):
     model = Asset
     form_class = AssetForm
     success_url = '/'
+
+    def post(self, request, *args, **kwargs):
+        self._price = B3Facade.get_asset_price(request.POST['name'])
+
+        return super().post(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        
+        kwargs = super().get_form_kwargs()
+
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({'price': self._price})
+
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -58,9 +85,8 @@ class UpdateAssetView(UpdateView):
 
     def form_valid(self, form):
         self.object = form.save(commit = False)
-        price = B3Facade.get_asset_price(self.object.name)
         
-        self.object.price = price
+        self.object.price = self._price
 
         self.object.save()
 

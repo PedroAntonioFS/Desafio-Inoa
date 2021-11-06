@@ -1,3 +1,6 @@
+ASSET_NOT_FOUND_ERROR = -1
+API_REQUEST_LIMIT_ERROR = -2
+
 def split_timedelta(timedelta):
     seconds = timedelta.total_seconds()
     days = int(seconds // (60 * 60 * 24))

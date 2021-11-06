@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .facade import ModelFacade
+from .facade import ModelFacade, B3Facade
 
 class Asset(models.Model):
     investor = ModelFacade.create_ForeignKey(User)
