@@ -22,7 +22,6 @@ def split_timedelta(timedelta):
 
 def timed_asset_update(asset):
     while True:
-        asset = Asset.objects.get(id=asset.id)
         sleep(asset.sleep_time.total_seconds())
         price = B3Facade.get_asset_price(asset.ticker)
         if price > 0:
