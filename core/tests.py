@@ -9,6 +9,7 @@ from .templatetags.poll_extra import *
 from .utils import *
 from .constants import *
 from time import sleep
+from django.core.mail import send_mail
 
 class TestModelFacade(TestCase):
 
@@ -261,3 +262,20 @@ class TestB3Facade(TestCase):
     def test_get_asset_price(self):
         petr4 = B3Facade.get_asset_price("PETR4")
         self.assertIsNotNone(petr4)
+
+# class TestAssetNotifiers(TestCase):
+#     def setUp(self):
+#         self._user = User.objects.create(username="user1", email="django.client.inoa@gmail.com")
+#         self._asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
+
+#     def test_sell(self):
+#         # sell = SellAssetNotifier(self._asset, self._user)
+#         # sell.send_email()
+#         response = send_mail(
+#             "Teste",
+#             "Teste",
+#             settings.EMAIL_HOST_USER,
+#             ["django.client.inoa@gmail.com",]
+#         )
+        
+#         self.assertEqual(response, 1)

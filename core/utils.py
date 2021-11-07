@@ -27,19 +27,24 @@ def timed_asset_update(asset):
     while True:
         sleep(asset.sleep_time.total_seconds())
         price = B3Facade.get_asset_price(asset.ticker)
+        asset = Asset.objects.get(id=asset.id)
         if price > 0:
             asset.price = price
             asset.save()
-        
-        asset = Asset.objects.get(id=asset.id)
+
+        print("OK")
+        if price > asset.max_limit:
+        # if False:
+            sell = SellAssetNotifier(asset)
+            sell.send_email()
 
 class BaseAssetNotifier:
     _subject = None
     _message = None
 
-    def __init__(self, asset, investor):
+    def __init__(self, asset):
         self._asset = asset
-        self._investor = investor
+        self._investor = asset.investor
 
     def get_message(self):
         pass
@@ -51,3 +56,10 @@ class BaseAssetNotifier:
             settings.EMAIL_HOST_USER,
             [self._investor.email,]
         )
+
+class SellAssetNotifier(BaseAssetNotifier):
+    _subject = "Sugestão de venda da PETR4"
+    _message = "Sr. Ou Sra. {}, o ativo PETR4 chegou ao limite máximo especificado.\nDados do Ativo {}:\nPreço: {} R$\nLimite máximo: {} R$"
+
+    def get_message(self):
+        return self._message.format(self._investor.first_name, self._asset.ticker, self._asset.price, self._asset.max_limit)
