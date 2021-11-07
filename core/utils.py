@@ -1,5 +1,6 @@
-ASSET_NOT_FOUND_ERROR = -1
-API_REQUEST_LIMIT_ERROR = -2
+from time import sleep
+from .facade import B3Facade
+from .models import Asset
 
 def split_timedelta(timedelta):
     seconds = timedelta.total_seconds()
@@ -18,3 +19,13 @@ def split_timedelta(timedelta):
     seconds_str = "0{}".format(seconds)[-2:]
 
     return days, "{}:{}:{}".format(hours_str, minutes_str, seconds_str)
+
+def timed_asset_update(asset):
+    while True:
+        sleep(asset.sleep_time.total_seconds())
+        price = B3Facade.get_asset_price(asset.ticker)
+        if price > 0:
+            asset.price = price
+            asset.save()
+        
+        asset = Asset.objects.get(id=asset.id)

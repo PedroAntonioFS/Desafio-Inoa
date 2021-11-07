@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from urllib import request
 import json
-from .utils import ASSET_NOT_FOUND_ERROR, API_REQUEST_LIMIT_ERROR
+from .constants import ASSET_NOT_FOUND_ERROR, API_REQUEST_LIMIT_ERROR
 
 def validate_negative(value):
     if value < 0:

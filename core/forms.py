@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from .models import *
 from .facade import DjangoExceptionsFacade
-from .utils import ASSET_NOT_FOUND_ERROR, API_REQUEST_LIMIT_ERROR
+from .constants import ASSET_NOT_FOUND_ERROR, API_REQUEST_LIMIT_ERROR
 
 class AssetForm(ModelForm):
     def __init__(self, *args, **kwargs):

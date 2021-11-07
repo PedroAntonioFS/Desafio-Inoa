@@ -7,6 +7,8 @@ from .models import *
 from .forms import *
 from .templatetags.poll_extra import *
 from .utils import *
+from .constants import *
+from time import sleep
 
 class TestModelFacade(TestCase):
 
@@ -188,7 +190,7 @@ class TestAddAssetView(TestCase):
             self.fail('Invalid: Asset does not exists error was not raised!')
         except:
             pass
-    
+
 class TestUpdateAssetView(TestCase):
     def setUp(self):
         self._user = User.objects.create(username="user1")
