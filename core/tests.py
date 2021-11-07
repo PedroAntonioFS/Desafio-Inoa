@@ -1,5 +1,6 @@
 from datetime import timedelta
 from decimal import Decimal
+from django import setup
 from django.test import TestCase
 from django.contrib.auth.models import User
 from .facade import *
@@ -7,6 +8,9 @@ from .models import *
 from .forms import *
 from .templatetags.poll_extra import *
 from .utils import *
+from .constants import *
+from time import sleep
+from threading import Thread
 
 class TestModelFacade(TestCase):
 
@@ -188,7 +192,22 @@ class TestAddAssetView(TestCase):
             self.fail('Invalid: Asset does not exists error was not raised!')
         except:
             pass
-    
+
+    def test_timed_asset_update(self):
+        sleep_time = timedelta(seconds=30)
+        self.client.post('/add/', {'ticker':"PETR4", 'max_limit':50.00, 'min_limit':19.07, 'sleep_time':sleep_time})
+
+        asset = Asset.objects.get(ticker="PETR4", investor=self._user)
+        asset.price = -3
+        asset.save()
+
+        sleep(30)
+
+        asset = Asset.objects.get(ticker="PETR4", investor=self._user)
+        self.assertNotEqual(asset.price, ASSET_NOT_FOUND_ERROR)
+        self.assertNotEqual(asset.price, API_REQUEST_LIMIT_ERROR)
+        self.assertNotEqual(asset.price, -3)
+
 class TestUpdateAssetView(TestCase):
     def setUp(self):
         self._user = User.objects.create(username="user1")

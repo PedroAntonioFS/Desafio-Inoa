@@ -1,3 +1,4 @@
+from threading import Thread
 from django.contrib.auth.models import User
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -51,6 +52,10 @@ class AddAssetView(CreateView):
         self.object.price = self._price
 
         self.object.save()
+
+        thread = Thread(target=timed_asset_update, args=(self.object, ))
+        thread.daemon = True
+        thread.start()
 
         return HttpFacade.call_redirect(self.get_success_url())
 
