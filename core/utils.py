@@ -1,6 +1,9 @@
 from time import sleep
+from django.conf import settings
+from django.core.mail import send_mail
 from .facade import B3Facade
 from .models import Asset
+
 
 def split_timedelta(timedelta):
     seconds = timedelta.total_seconds()
@@ -29,3 +32,22 @@ def timed_asset_update(asset):
             asset.save()
         
         asset = Asset.objects.get(id=asset.id)
+
+class BaseAssetNotifier:
+    _subject = None
+    _message = None
+
+    def __init__(self, asset, investor):
+        self._asset = asset
+        self._investor = investor
+
+    def get_message(self):
+        pass
+
+    def send_email(self):
+        send_mail(
+            self._subject,
+            self.get_message(),
+            settings.EMAIL_HOST_USER,
+            [self._investor.email,]
+        )
