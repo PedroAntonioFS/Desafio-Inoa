@@ -4,7 +4,6 @@ from django.core.mail import send_mail
 from .facade import B3Facade
 from .models import Asset
 
-
 def split_timedelta(timedelta):
     seconds = timedelta.total_seconds()
     days = int(seconds // (60 * 60 * 24))
@@ -32,10 +31,12 @@ def timed_asset_update(asset):
             asset.price = price
             asset.save()
 
-        print("OK")
         if price > asset.max_limit:
-        # if False:
             sell = SellAssetNotifier(asset)
+            sell.send_email()
+
+        if price < asset.min_limit:
+            sell = BuyAssetNotifier(asset)
             sell.send_email()
 
 class BaseAssetNotifier:
@@ -63,3 +64,10 @@ class SellAssetNotifier(BaseAssetNotifier):
 
     def get_message(self):
         return self._message.format(self._investor.first_name, self._asset.ticker, self._asset.price, self._asset.max_limit)
+        
+class BuyAssetNotifier(BaseAssetNotifier):
+    _subject = "Sugestão de compra da PETR4"
+    _message = "Sr. Ou Sra. {}, o ativo PETR4 chegou ao limite mínimo especificado.\nDados do Ativo {}:\nPreço: {} R$\nLimite mínimo: {} R$"
+
+    def get_message(self):
+        return self._message.format(self._investor.first_name, self._asset.ticker, self._asset.price, self._asset.min_limit)
