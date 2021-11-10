@@ -11,11 +11,10 @@ class AssetsListView(ListView):
     template_name = "core/asset/list.html"
     model = Asset
 
-    def get_query_set(self):
+    def  get_queryset(self):
         query = super().get_queryset()
-        user = User.objects.get(username="user1")
 
-        return query.filter(investor=user)
+        return query.filter(investor=self.request.user)
 
 class AddAssetView(CreateView):
     template_name = "core/asset/add.html"
@@ -46,7 +45,8 @@ class AddAssetView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit = False)
-        user = User.objects.get(username="user1")
+        username = self.request.user.username
+        user = User.objects.get(username=username)
         
         self.object.investor = user
         self.object.price = self._price
