@@ -2,14 +2,13 @@ from datetime import timedelta
 from decimal import Decimal
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from .facade import *
 from .models import *
 from .forms import *
 from .templatetags.poll_extra import *
 from .utils import *
 from .constants import *
-from time import sleep
-from django.core.mail import send_mail
 
 class TestModelFacade(TestCase):
 
@@ -91,11 +90,19 @@ class TestAsset(TestCase):
 
 class TestAssetsListView(TestCase):
     def setUp(self):
-        self._user = User.objects.create(username="user1")
+        form = UserCreationForm({'username': 'user1', 'password1': 'Senha1234', 'password2': 'Senha1234'})
+        form.save()
+        form = UserCreationForm({'username': 'user2', 'password1': 'Senha1234', 'password2': 'Senha1234'})
+        form.save()
+        self._user = User.objects.get(username="user1")
+        user2 = User.objects.get(username="user2")
         
         self._asset1 = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
         self._asset2 = Asset.objects.create(investor=self._user, ticker="VALE3", price=71.96, max_limit=120.00, min_limit=50.00, sleep_time=timedelta(days=5))
         self._asset3 = Asset.objects.create(investor=self._user, ticker="GOLGL34", price=111.56, max_limit=170.00, min_limit=110.00, sleep_time=timedelta(days=7))
+        self._asset4 = Asset.objects.create(investor=user2, ticker="TSLA34", price=175.21, max_limit=200.00, min_limit=110.00, sleep_time=timedelta(days=7))
+
+        self.client.post('/accounts/login/', {'username':'user1', 'password': 'Senha1234'})
 
     def test_url(self):
         response = self.client.get('')
@@ -108,6 +115,7 @@ class TestAssetsListView(TestCase):
     def test_context(self):
         response = self.client.get('')
 
+        self.assertEqual(len(response.context['object_list']), 3)
         self.assertEqual(response.context['object_list'][0], self._asset1)
         self.assertEqual(response.context['object_list'][1], self._asset2)
         self.assertEqual(response.context['object_list'][2], self._asset3)
@@ -155,7 +163,10 @@ class TestAssetForm(TestCase):
 
 class TestAddAssetView(TestCase):
     def setUp(self):
-        self._user = User.objects.create(username="user1")
+        form = UserCreationForm({'username': 'user1', 'password1': 'Senha1234', 'password2': 'Senha1234'})
+        form.save()
+        self._user = User.objects.get(username="user1")
+        self.client.post('/accounts/login/', {'username':'user1', 'password': 'Senha1234'})
 
     def test_url(self):
         response = self.client.get('/add/')
@@ -194,7 +205,11 @@ class TestAddAssetView(TestCase):
 
 class TestUpdateAssetView(TestCase):
     def setUp(self):
-        self._user = User.objects.create(username="user1")
+        form = UserCreationForm({'username': 'user1', 'password1': 'Senha1234', 'password2': 'Senha1234'})
+        form.save()
+        self._user = User.objects.get(username="user1")
+        self.client.post('/accounts/login/', {'username':'user1', 'password': 'Senha1234'})
+
         self._asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
 
     def test_url(self):
@@ -234,7 +249,11 @@ class TestUpdateAssetView(TestCase):
 
 class TestDeleteAssetView(TestCase):
     def setUp(self):
-        self._user = User.objects.create(username="user1")
+        form = UserCreationForm({'username': 'user1', 'password1': 'Senha1234', 'password2': 'Senha1234'})
+        form.save()
+        self._user = User.objects.get(username="user1")
+        self.client.post('/accounts/login/', {'username':'user1', 'password': 'Senha1234'})
+
         self._asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
 
     def test_url(self):
@@ -263,19 +282,27 @@ class TestB3Facade(TestCase):
         petr4 = B3Facade.get_asset_price("PETR4")
         self.assertIsNotNone(petr4)
 
-# class TestAssetNotifiers(TestCase):
-#     def setUp(self):
-#         self._user = User.objects.create(username="user1", email="django.client.inoa@gmail.com")
-#         self._asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
+class TestAuthentication(TestCase):
+    def setUp(self):
+        form = UserCreationForm({'username': 'user1', 'password1': 'Senha1234', 'password2': 'Senha1234'})
+        form.save()
 
-#     def test_sell(self):
-#         # sell = SellAssetNotifier(self._asset, self._user)
-#         # sell.send_email()
-#         response = send_mail(
-#             "Teste",
-#             "Teste",
-#             settings.EMAIL_HOST_USER,
-#             ["django.client.inoa@gmail.com",]
-#         )
-        
-#         self.assertEqual(response, 1)
+    def test_url(self):
+        response = self.client.get('/accounts/login/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_template(self):
+        response = self.client.get('/accounts/login/')
+        self.assertTemplateUsed(response, 'registration/login.html')
+
+    def test_login(self):
+        response = self.client.post('/accounts/login/', {'username': 'user1', 'password': 'Senha1234'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.wsgi_request.user.username, 'user1')
+
+    def test_logout(self):
+        self.client.post('/accounts/login/', {'username': 'user1', 'password': 'Senha1234'})
+        response = self.client.get('/accounts/logout/', follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(response.wsgi_request.user.username, 'user1')
+        self.assertTemplateUsed('registration/login.html')
