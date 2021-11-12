@@ -306,3 +306,19 @@ class TestAuthentication(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(response.wsgi_request.user.username, 'user1')
         self.assertTemplateUsed('registration/login.html')
+
+    def test_login_required(self):
+        response = self.client.get('', follow=True)
+        self.assertTemplateUsed(response, 'registration/login.html')
+
+        response = self.client.get('/add/', follow=True)
+        self.assertTemplateUsed(response, 'registration/login.html')
+        
+        self._user = User.objects.get(username="user1")
+        self._asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=50.00, min_limit=19.07, sleep_time=timedelta(days=1))
+
+        response = self.client.get('/{}/update/'.format(self._asset.id), follow=True)
+        self.assertTemplateUsed(response, 'registration/login.html')
+
+        response = self.client.get('/{}/delete/'.format(self._asset.id), follow=True)
+        self.assertTemplateUsed(response, 'registration/login.html')
