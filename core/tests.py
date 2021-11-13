@@ -31,6 +31,11 @@ class TestModelFacade(TestCase):
         field = ModelFacade.create_DurationField('teste')
         self.assertEqual(field.verbose_name, 'teste')
 
+class TestFormFacade(TestCase):
+
+    def test_get_user_form(self):
+        self.assertEqual(UserCreationForm, FormFacade.get_user_form())
+
 class TestAsset(TestCase):
     def setUp(self):
         self._user = User.objects.create(username="user1")

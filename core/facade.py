@@ -2,6 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
+from django.contrib.auth.forms import UserCreationForm
 from urllib import request
 import json
 from .constants import ASSET_NOT_FOUND_ERROR, API_REQUEST_LIMIT_ERROR
@@ -58,6 +59,12 @@ class MailFacade:
             from_email,
             recipient_list
         )
+
+class FormFacade:
+
+    @staticmethod
+    def get_user_form():
+        return UserCreationForm
 
 class B3Facade:
 
