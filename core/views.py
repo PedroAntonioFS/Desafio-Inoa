@@ -41,6 +41,12 @@ class AddAssetView(LoginRequiredMixin, CreateView):
         
         context['days'] = 0
         context['remain_time'] = "00:00:00"
+        
+        if self.request.method in ('POST', 'PUT'):
+            sleep_time = self.request.POST['sleep_time'].split()
+            context['days'] = sleep_time[0]
+            context['remain_time'] = sleep_time[1]
+            context['ticker'] = self.request.POST['ticker']
 
         return context
 
