@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
@@ -63,8 +64,8 @@ class MailFacade:
 class FormFacade:
 
     @staticmethod
-    def get_user_form():
-        return UserCreationForm
+    def create_email_field(label="Email",required=False):
+        return forms.EmailField(label=label, required=required)
 
 class B3Facade:
 
