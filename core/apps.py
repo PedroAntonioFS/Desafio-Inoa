@@ -1,6 +1,5 @@
 from django.apps import AppConfig
 from threading import Thread
-from .facade import B3Facade
 import os
 
 teste = True
@@ -13,6 +12,7 @@ class CoreConfig(AppConfig):
             super().ready()
             from .models import Asset
             from .utils import timed_asset_update, ModelFacade
+            from .facade import B3Facade
 
             assets_list = ModelFacade.get_all_objects(Asset)
 
