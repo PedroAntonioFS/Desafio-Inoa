@@ -4,7 +4,7 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import *
 from .forms import *
-from .facade import HttpFacade, B3Facade, FormFacade
+from .facade import HttpFacade, B3Facade
 from .utils import *
 
 class AssetsListView(LoginRequiredMixin, ListView):
@@ -104,5 +104,5 @@ class DeleteAssetView(LoginRequiredMixin, DeleteView):
 
 class CreateUserView(CreateView):
     template_name = 'core/sign_up.html'
-    form_class = FormFacade.get_user_form()
+    form_class = CustomUserCreationForm
     success_url = '/accounts/login/'

@@ -33,8 +33,10 @@ class TestModelFacade(TestCase):
 
 class TestFormFacade(TestCase):
 
-    def test_get_user_form(self):
-        self.assertEqual(UserCreationForm, FormFacade.get_user_form())
+    def test_create_email_field(self):
+        field = FormFacade.create_email_field(required=True)
+        self.assertEqual(field.label, 'Email')
+        self.assertTrue(field.required)
 
 class TestAsset(TestCase):
     def setUp(self):
@@ -338,7 +340,7 @@ class TestCreateUserView(TestCase):
         self.assertTemplateUsed(response, 'core/sign_up.html')
 
     def test_create_user(self):
-        response = self.client.post('/sign_up/', {'username': 'user1', 'password1': 'Senha1234', 'password2': 'Senha1234'})
+        response = self.client.post('/sign_up/', {'username': 'user1', 'password1': 'Senha1234', 'password2': 'Senha1234', 'email': 'teste@teste.com'})
 
         try:
             user = User.objects.get(username='user1')
