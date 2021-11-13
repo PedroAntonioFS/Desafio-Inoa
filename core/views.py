@@ -1,5 +1,4 @@
 from threading import Thread
-from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -41,19 +40,13 @@ class AddAssetView(LoginRequiredMixin, CreateView):
         
         context['days'] = 0
         context['remain_time'] = "00:00:00"
-        
-        if self.request.method in ('POST', 'PUT'):
-            sleep_time = self.request.POST['sleep_time'].split()
-            context['days'] = sleep_time[0]
-            context['remain_time'] = sleep_time[1]
-            context['ticker'] = self.request.POST['ticker']
 
         return context
 
     def form_valid(self, form):
         self.object = form.save(commit = False)
         username = self.request.user.username
-        user = User.objects.get(username=username)
+        user = ModelFacade.get_object(User, username=username)
         
         self.object.investor = user
         self.object.price = self._price

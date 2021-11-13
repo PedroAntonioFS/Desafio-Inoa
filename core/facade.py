@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
+from django.core.mail import send_mail
 from urllib import request
 import json
 from .constants import ASSET_NOT_FOUND_ERROR, API_REQUEST_LIMIT_ERROR
@@ -27,6 +28,14 @@ class ModelFacade:
     def create_DurationField(label):
         return models.DurationField(label)
 
+    @staticmethod
+    def get_object(model, *args, **kwargs):
+        return model.objects.get(*args, **kwargs)
+
+    @staticmethod
+    def get_all_objects(model):
+        return model.objects.all()
+
 class DjangoExceptionsFacade:
 
     @staticmethod
@@ -38,6 +47,17 @@ class HttpFacade:
     @staticmethod
     def call_redirect(url):
         return HttpResponseRedirect(url)
+
+class MailFacade:
+
+    @staticmethod
+    def call_send_mail(subject, message, from_email, recipient_list):
+        send_mail(
+            subject,
+            message,
+            from_email,
+            recipient_list
+        )
 
 class B3Facade:
 
