@@ -327,3 +327,22 @@ class TestAuthentication(TestCase):
 
         response = self.client.get('/{}/delete/'.format(self._asset.id), follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')
+
+class TestCreateUserView(TestCase):
+    def test_url(self):
+        response = self.client.get('/sign_up/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_template(self):
+        response = self.client.get('/sign_up/')
+        self.assertTemplateUsed(response, 'core/sign_up.html')
+
+    def test_create_user(self):
+        response = self.client.post('/sign_up/', {'username': 'user1', 'password1': 'Senha1234', 'password2': 'Senha1234'})
+
+        try:
+            user = User.objects.get(username='user1')
+        except:
+            self.fail('Invalid: User was not saved!')
+
+        self.assertEqual(user.username, 'user1')
