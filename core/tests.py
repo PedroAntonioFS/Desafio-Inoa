@@ -34,7 +34,7 @@ class TestModelFacade(TestCase):
 class TestFormFacade(TestCase):
 
     def test_create_email_field(self):
-        field = FormFacade.create_email_field(required=True)
+        field = FormFacade.create_EmailField(required=True)
         self.assertEqual(field.label, 'Email')
         self.assertTrue(field.required)
 
