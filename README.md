@@ -25,13 +25,11 @@ Execute o seguinte comando no terminal
 
 > Instalação Django
 
-Após este repositório estiver dentro de um diretório (vamos usar o exemplo /desafio-inoa), execute os seguintes passos.
-
 1. Criei um ambiente virtual, por exemplo:
 
 Windows: `python -m venv myvenv`
 
-Linux/MacOS: `python3 - =m venv myvenv`
+Linux/MacOS: `python3 -m venv myvenv`
 
 2. Ative o ambiente virtual, por exemplo:
 
@@ -45,21 +43,23 @@ Windows: `pip install django`
 
 Linux/MacOS: `pip3 install django`
 
+> Forneça um e-mail para ser utilizado pelo servidor
+
+É necessário de endereço de e-mail para que o Django execute o envio de mensagens. Substitua o arquivo exemplo [email_configs.json](https://github.com/PedroAntonioFS/Desafio-Inoa/blob/main/email_configs.json) por um com informações reais de e-mail, senha, provedor e etc.
+
+OBS para Inoa Sistemas: Se necessário entre em contato comigo por e-mail, posso fornecer o arquivo com e-mail real.
+
 > Execute
 
-1. Dentro de desafio-inoa, abra o diretório Inoa:
+1. Abra o diretório que contém o arquivo manage.py
 
-Windows: `cd Inoa`
-
-Linux/MacOS: `cd Inoa`
-
-1.1. Execute a aplicação:
+2. Execute a aplicação:
 
 Windows: `python manage.py runserver`
 
 Linux/MacOS: `python3 manage.py runserver`
 
-1.2. Execute os testes:
+2. Ou Execute os testes:
 
 Windows: `python manage.py test`
 
@@ -84,9 +84,9 @@ Nesse tópico há a arquitetura da solução implementada. Possui o diagrama ent
 [Ver](https://github.com/PedroAntonioFS/Desafio-Inoa/wiki/Arquitetura-do-Software)
 
 ### Product Backlog
-O product backlog possui a descrição das features implementas, suas prioridades e issues relacionadas.
+O product backlog possui a descrição das features implementadas, suas prioridades e issues relacionadas.
 [Ver](https://github.com/PedroAntonioFS/Desafio-Inoa/wiki/Product-Backlog)
 
 ### Documentação
-A documentação possui uma descrição das classes implementas, atributos, parâmetros, métodos e funções.
+A documentação possui uma descrição das classes implementadas, atributos, parâmetros, métodos e funções.
 [Ver](https://github.com/PedroAntonioFS/Desafio-Inoa/wiki/Documenta%C3%A7%C3%A3o)
