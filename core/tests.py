@@ -34,7 +34,7 @@ class TestModelFacade(TestCase):
 class TestFormFacade(TestCase):
 
     def test_create_email_field(self):
-        field = FormFacade.create_email_field(required=True)
+        field = FormFacade.create_EmailField(required=True)
         self.assertEqual(field.label, 'Email')
         self.assertTrue(field.required)
 
@@ -89,8 +89,8 @@ class TestAsset(TestCase):
     def test_unique_constraint(self):
         sleep_time = timedelta(days=1)
         try:
-            asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
-            asset = Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
+            Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
+            Asset.objects.create(investor=self._user, ticker="PETR4", price=27.48, max_limit=19.07, min_limit=50.00, sleep_time=sleep_time)
             self.fail("Unique constraint fail!")
         except:
             pass
@@ -127,7 +127,7 @@ class TestAssetsListView(TestCase):
         self.assertEqual(response.context['object_list'][1], self._asset2)
         self.assertEqual(response.context['object_list'][2], self._asset3)
 
-class Test_poll_extra(TestCase):
+class TestPollExtra(TestCase):
     def format_timedelta_in_pt_br(self):
         hours12 = format_timedelta_in_pt_br(timedelta(hours=12))
         day1 = format_timedelta_in_pt_br(timedelta(days=1))
@@ -340,7 +340,7 @@ class TestCreateUserView(TestCase):
         self.assertTemplateUsed(response, 'core/sign_up.html')
 
     def test_create_user(self):
-        response = self.client.post('/sign_up/', {'username': 'user1', 'password1': 'Senha1234', 'password2': 'Senha1234', 'email': 'teste@teste.com'})
+        self.client.post('/sign_up/', {'username': 'user1', 'password1': 'Senha1234', 'password2': 'Senha1234', 'email': 'teste@teste.com'})
 
         try:
             user = User.objects.get(username='user1')
