@@ -1,0 +1,18 @@
+{% extends 'core/asset/form.html' %}
+{% load static %}
+
+{% block title %}
+    <h1 class="display-6 text-center">Inserir Ativo</h1>
+{% endblock %}
+        
+{% block more_fields %}
+    {% for error in form.ticker.errors %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% endfor %}
+    <div class="mb-3">
+        <label for="{{ form.ticker.name }}" class="form-label">{{ form.ticker.label }}</label>
+        <input id="id_{{ form.ticker.name }}" class="form-control" type="text" name="{{ form.ticker.name }}" value="{{ ticker }}" required="">
+    </div>
+{% endblock %}

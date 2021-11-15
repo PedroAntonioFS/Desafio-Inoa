@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import json
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'core',
     'django.contrib.staticfiles',
-    'core'
 ]
 
 MIDDLEWARE = [
@@ -56,7 +57,7 @@ ROOT_URLCONF = 'inoaSite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,6 +80,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'OPTIONS': {
+        'connection-timeout': 60,
     }
 }
 
@@ -126,3 +130,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+json_file = open("email_configs.json")
+email_data = json.load(json_file)
+
+EMAIL_BACKEND = email_data['EMAIL_BACKEND']
+EMAIL_HOST = email_data['EMAIL_HOST']
+EMAIL_USE_TLS = "True" == email_data['EMAIL_USE_TLS']
+EMAIL_PORT = int(email_data['EMAIL_PORT'])
+EMAIL_HOST_USER = email_data['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = email_data['EMAIL_HOST_PASSWORD']

@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load poll_extra %}
+
+{% block content %}
+<div class="accordion mt-4 mb-2" id="accordionExample">
+    <h1 class="display-6 text-center">Ativos</h1>
+    {% for asset in object_list %}
+    
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="heading_{{ asset.id }}_">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_{{ asset.id }}_" aria-expanded="false" aria-controls="collapse_{{ asset.id }}_">
+                {{ asset.ticker }}
+            </button>
+        </h2>
+        <div id="collapse_{{ asset.id }}_" class="accordion-collapse collapse" aria-labelledby="heading_{{ asset.id }}_" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <table class="table table-bordered">
+                    <tr><th scope="col">Preço</th></tr>
+                    <tr><td>R$ {{ asset.price }}</td></tr>
+                    <tr><th scope="col">Limite mínimo</th></tr>
+                    <tr><td>R$ {{ asset.min_limit }}</td></tr>
+                    <tr><th scope="col">Limite máximo</th></tr>
+                    <tr><td>R$ {{ asset.max_limit }}</td></tr>
+                    <tr><th scope="col">Periodicidade de atualização</th></tr>
+                    <tr><td>{{ asset.sleep_time|br_time }}</td></tr>
+                </table>
+                <a href="{% url 'update_asset' pk=asset.pk  %}" class="btn btn-primary">Editar</a>
+                <a href="{% url 'delete_asset' pk=asset.pk  %}" class="btn btn-danger">Remover</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<a href="{% url 'add_asset' %}" class="btn btn-primary">Inserir</a>
+{% endblock %}

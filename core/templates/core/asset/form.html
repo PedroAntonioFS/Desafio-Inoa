@@ -1,0 +1,82 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block scripts %}
+<script type="text/javascript">
+    function merge_sleep_time(){
+        days = $("#id_days").val()
+        remain_time = $("#id_remain_time").val()
+        
+        sleep_time = parseInt(days) + " " + remain_time
+        if (parseInt(days) == 0) {
+            sleep_time = remain_time
+        }else{
+            sleep_time = days + " " + remain_time
+        }
+        $('#id_sleep_time').val(sleep_time)
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+
+{% block title %}
+{% endblock %}
+
+<div class="row justify-content-center">
+    <form class="col-3" method="post">
+        {% csrf_token %}
+        
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ error }}
+            </div>
+        {% endfor %}
+        
+        {% block more_fields %}
+        {% endblock %}
+    
+        {% for error in form.max_limit.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endfor %}
+        <div class="mb-3">
+            <label for="{{ form.max_limit.name }}" class="form-label">{{ form.max_limit.label }}</label>
+            <input id="id_{{ form.max_limit.name }}" class="form-control" type="number" name="{{ form.max_limit.name }}" step="0.01" value="{{ form.max_limit.value }}" required="">
+        </div>
+    
+        {% for error in form.min_limit.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endfor %}
+        <div class="mb-3">
+            <label for="min_limit" class="form-label">{{ form.min_limit.label }}</label>
+            <input id="id_min_limit" class="form-control" type="number" name="min_limit" step="0.01" value="{{ form.min_limit.value }}" required="">
+        </div>
+        
+        {% for error in form.sleep_time.errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endfor %}
+        <div oninput="merge_sleep_time()">
+            <label for="min_limit" class="form-label">{{ form.sleep_time.label }}</label>
+            <div class="input-group mb-3">
+                <input id="id_days" name="days" class="form-control" type="number" required="" value={{ days }}>
+                <span class="input-group-text" id="basic-addon2">Dias</span>
+            </div>
+            <div class="input-group mb-3">
+                <input id="id_remain_time" name="remain_time" class="form-control" type="time" required="" step=1 value="{{ remain_time }}">
+                <span class="input-group-text" id="basic-addon2">Horas</span>
+            </div>
+            <input id="id_sleep_time" class="form-control" type="text" name="sleep_time" value="{{ form.sleep_time.value }}" required="" hidden>
+        </div>
+        <div class="row">
+            <input type="submit" class="btn btn-success" value="Save"></input>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
