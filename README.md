@@ -24,46 +24,56 @@ Execute o seguinte comando no terminal
 `$ sudo apt install python3`
 
 > Instalação Django
-Após este repositório estiver dentro de um diretório, execute os seguintes passos.
+
+Após este repositório estiver dentro de um diretório (vamos usar o exemplo /desafio-inoa), execute os seguintes passos.
 
 1. Criei um ambiente virtual, por exemplo:
 
 Windows: `python -m venv myvenv`
+
 Linux/MacOS: `python3 - =m venv myvenv`
 
 2. Ative o ambiente virtual, por exemplo:
 
 Windows: `myvenv\scripts\activate`
+
 Linux/MacOS: `myvenv\bin\activate`
 
 3. Instale o Django
 
 Windows: `pip install django`
+
 Linux/MacOS: `pip3 install django`
 
-4. Abra o diretório:
+> Execute
+
+1. Dentro de desafio-inoa, abra o diretório Inoa:
 
 Windows: `cd Inoa`
 
-5. Execute a aplicação:
+Linux/MacOS: `cd Inoa`
+
+1.1. Execute a aplicação:
 
 Windows: `python manage.py runserver`
+
 Linux/MacOS: `python3 manage.py runserver`
 
-6. Execute os testes:
+1.2. Execute os testes:
 
 Windows: `python manage.py test`
+
 Linux/MacOS: `python3 manage.py test`
 
 ### Limites
-
+ATENÇÂO: A aplicação utiliza a API REST [ALPHA VANTAGE](https://www.alphavantage.co/) em sua versão gratuita, por isso há um limite de requisições, 5 chamadas por minuto e 500 chamadas por dia. Execute a aplicação e os testes com moderação.
 
 ## Entenda o Problema
 Verifique a Wiki do projeto para uma compreensão mais ampla do problema e da solução implementada.
 
 [Wiki](https://github.com/PedroAntonioFS/Desafio-Inoa/wiki)
 
-A seguir alguns tópicos abordados na Wiki
+A seguir alguns tópicos abordados na Wiki:
 
 ### Requisitos de Software
 A especificação dos requisitos de software contém informações estruturadas do problema proposto. Nela há a descrição do problema, requisitos expostos e casos de usos encontrados.
