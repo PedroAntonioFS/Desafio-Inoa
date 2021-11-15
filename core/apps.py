@@ -2,7 +2,6 @@ from django.apps import AppConfig
 from threading import Thread
 import os
 
-teste = True
 class CoreConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'core'
@@ -12,7 +11,6 @@ class CoreConfig(AppConfig):
             super().ready()
             from .models import Asset
             from .utils import timed_asset_update, ModelFacade
-            from .facade import B3Facade
 
             assets_list = ModelFacade.get_all_objects(Asset)
 

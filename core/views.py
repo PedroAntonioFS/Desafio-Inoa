@@ -4,7 +4,7 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import *
 from .forms import *
-from .facade import HttpFacade, B3Facade
+from .facade import HttpFacade, B3Facade, ModelFacade
 from .utils import *
 
 class AssetsListView(LoginRequiredMixin, ListView):

@@ -14,10 +14,10 @@ class AssetForm(ModelForm):
         exclude = ['investor', 'price']
     
     def clean(self):
-        cleanedData = super().clean()
+        cleaned_data = super().clean()
 
-        min_limit = cleanedData.get('min_limit')
-        max_limit = cleanedData.get('max_limit')
+        min_limit = cleaned_data.get('min_limit')
+        max_limit = cleaned_data.get('max_limit')
         
         if min_limit and max_limit and (min_limit >= max_limit):
             DjangoExceptionsFacade.raise_ValidationError("Limite mínimo deve ser menor que o limite máximo!")
@@ -29,7 +29,7 @@ class AssetForm(ModelForm):
             DjangoExceptionsFacade.raise_ValidationError("O limite máximo de solicitações alcançado. A frequência permitida é de 5 chamadas por minuto e 500 chamadas por dia!")
 
 class CustomUserCreationForm(UserCreationForm):
-    email = FormFacade.create_email_field(required=True)
+    email = FormFacade.create_EmailField(required=True)
 
     class Meta:
         model = User

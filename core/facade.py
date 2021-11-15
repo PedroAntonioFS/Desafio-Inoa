@@ -3,7 +3,6 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseRedirect
 from django.core.mail import send_mail
-from django.contrib.auth.forms import UserCreationForm
 from urllib import request
 import json
 from .constants import ASSET_NOT_FOUND_ERROR, API_REQUEST_LIMIT_ERROR
@@ -64,7 +63,7 @@ class MailFacade:
 class FormFacade:
 
     @staticmethod
-    def create_email_field(label="Email",required=False):
+    def create_EmailField(label="Email",required=False):
         return forms.EmailField(label=label, required=required)
 
 class B3Facade:
